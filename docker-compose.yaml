@@ -1,0 +1,42 @@
+services:
+  add-service:
+    build: ./addition-service
+    container_name: add-service
+    ports:
+      - "3001:3001"
+    networks:
+      - calculator-network
+
+  subtract-service:
+    build: ./subtraction-service
+    container_name: subtract-service
+    ports:
+      - "3002:3002"
+    networks:
+      - calculator-network
+
+  result-service:
+    build: ./result-service
+    container_name: result-service
+    ports:
+      - "3003:3003"
+    networks:
+      - calculator-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - DOCKER_ENV=true
+    depends_on:
+      - add-service
+      - subtract-service
+      - result-service
+    networks:
+      - calculator-network
+
+networks:
+  calculator-network:
+    driver: bridge
